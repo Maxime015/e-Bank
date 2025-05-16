@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graphe du Solde / Dépenses</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(45deg, #90c8f1, cadetblue);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1600px;
+        }
+
+        canvas {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar {
+            background-color: #2c3e50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            top: -20px;
+            border-radius: 25px;
+        }
+
+        .navbar .logo {
+            font-size: 24px;
+            color: #ecf0f1;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-decoration: none;
+        }
+
+        .navbar .menu {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar .menu li {
+            margin: 0 15px;
+        }
+
+        .navbar .menu a {
+            color: #ecf0f1;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .navbar .menu a:hover {
+            color: #1abc9c;
+            transition: color 0.3s ease;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <!-- Navbar -->
+        <nav class="navbar">
+            <a href="#" class="logo">Dashboard</a>
+            <ul class="menu">
+                <li><a href="{% url 'bank' %}">++ Account</a></li>
+                <li><a href="{% url 'graphe' %}">Graphe~ 1</a></li>
+                <li><a href="{% url 'graphe2' %}">Graphe~2</a></li>
+                <li><a href="{% url 'graphe4' %}">Graphe~4</a></li>
+                <li><a href="{% url 'graphe5' %}">Graphe~5</a></li>
+                <li><a href="{% url 'graphe6' %}">Graphe~6</a></li>
+                <li><a href="{% url 'Tab' %}">Accounts</a></li>
+                <li><a href="{% url 'profile' %}">Profile</a></li>
+                <li><a href="{% url 'dashboard' %}">Expenses</a></li>
+                <li><a href="{% url 'transactions' %}">Transactions</a></li>
+            </ul>
+        </nav>
+
+        <!-- Graphique -->
+        <canvas id="barChart"></canvas>
+    </div>
+
+    <!-- Insertion des données Django dans le script -->
+    <script>
+        const budgetsData = JSON.parse('{{ budgets_data_json|escapejs }}');
+    </script>
+
+    <!-- Inclusion de Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Transformation des données pour le graphique
+        const labels = budgetsData.map(item => item.name);
+        const pvData = budgetsData.map(item => item.solde); // Solde
+        const uvData = budgetsData.map(item => item.total_expenses); // Dépenses totales
+
+        // Initialisation du graphique avec Chart.js
+        const ctx = document.getElementById('barChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Solde',
+                        data: pvData,
+                        backgroundColor: '#EF9FBC',
+                        borderRadius: 30, // Bordures arrondies
+                    },
+                    {
+                        label: 'Dépenses totales',
+                        data: uvData,
+                        backgroundColor: '#EEAF3A',
+                        borderRadius: 30, // Bordures arrondies
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (tooltipItem) {
+                                return `${tooltipItem.dataset.label}: ${tooltipItem.raw}`;
+                            },
+                        },
+                    },
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Comptes',
+                        },
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Valeurs',
+                        },
+                        beginAtZero: true,
+                    },
+                },
+            },
+        });
+    </script>
+</body>
+
+</html>

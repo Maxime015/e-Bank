@@ -1,0 +1,259 @@
+
+
+
+{% block styles %}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color:lightslategrey;
+        color: #333;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+        overflow-y: hidden;
+    }
+    .container {
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        width: 1800px;
+    }
+    h1 {
+        text-align: center;
+        font-size: 24px;
+        margin-bottom: 20px;
+        color: #4b6584;
+    }
+    .chart-area {
+        width: 100%;
+        height: 600px;
+    }
+
+    .navbar {
+        background-color: #2c3e50;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 20px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        position: relative;
+        top: -90px;
+        border-radius: 25px;
+        height: 10px;
+    }
+
+    .navbar .logo {
+        font-size: 24px;
+        color: #ecf0f1;
+        font-weight: bold;
+        text-transform: uppercase;
+        text-decoration: none;
+    }
+
+    .navbar .menu {
+        display: flex;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .navbar .menu li {
+        margin: 0 15px;
+    }
+
+    .navbar .menu a {
+        color: #ecf0f1;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 16px;
+    }
+
+    .navbar .menu a:hover {
+        color: #1abc9c;
+        transition: color 0.3s ease;
+    }
+
+
+    .container .pulse {
+    position: absolute;
+    background:  rgba(52, 152, 219, 0.8); 
+    width: 20px; /* Taille augmentée */
+    height: 20px; /* Taille augmentée */
+    right: 100px;
+    top: 150px;
+    border-radius: 50%;
+    z-index: 2;
+    box-shadow: 0 0 10px rgba(122, 123, 124, 0.8); /* Ajout d'un halo */
+}
+
+.container .pulse::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    border-radius: 50%;
+    border: 2px solid #05f3c3; /* Bordure plus épaisse */
+    transform-origin: center;
+    opacity: 0.6;
+    scale: 0.5; /* Échelle initiale visible */
+    animation: pulse 1.5s ease-out infinite;
+}
+
+@keyframes pulse {
+    0% {
+        scale: 1;
+        opacity: 0.6;
+    }
+    50% {
+        scale: 1.5;
+        opacity: 0.3;
+    }
+    100% {
+        scale: 2.5;
+        opacity: 0;
+    }
+}
+
+
+</style>
+{% endblock %}
+
+{% block content %}
+
+
+<div class="container">
+    <nav class="navbar">
+        <a href="#" class="logo">Dashboard</a>
+        <ul class="menu">
+            <li><a href="{% url 'bank' %}">++ Account</a></li>
+            <li><a href="{% url 'graphe' %}" >Graphe~ 1</a></li>
+            <li><a href="{% url 'graphe2' %}" >Graphe~ 2</a></li>
+            <li><a href="{% url 'graphe3' %}" >Graphe~ 3</a></li>
+            <li><a href="{% url 'graphe5' %}">Graphe~5</a></li>
+            <li><a href="{% url 'graphe6' %}">Graphe~6</a></li>
+            <li><a href="{% url 'Tab' %}">Accounts</a></li>
+            <li><a href="{% url 'profile' %}">Profile</a></li>
+            <li><a href="{% url 'dashboard' %}">Expenses</a></li>
+            <li><a href="{% url 'transactions' %}">Transactions</a></li>
+        </ul>
+    </nav>
+    <div class="pulse"></div>
+    <h1><u>Évolution des Dépenses</u></h1>
+    <div class="chart-area" role="img" aria-label="Graphique de l'évolution des soldes bancaires"></div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Récupérer les données depuis le contexte Django
+        const labels = JSON.parse('{{ labels|safe }}') || [];
+        const data = JSON.parse('{{ data|safe }}') || [];
+
+        if (!labels.length || !data.length) {
+            console.error("Aucune donnée disponible pour le graphique.");
+            return;
+        }
+
+        // Configuration du graphique
+        const chartOptions = {
+            chart: {
+                type: 'area',
+                height: 600,
+                toolbar: { show: true },
+                zoom: { enabled: true },
+                animations: {
+                    enabled: true,
+                    easing: 'easeinout',
+                    speed: 800,
+                },
+            },
+            colors: ['crimson'],
+            series: [{
+                name: 'Soldes (€)',
+                data: data
+            }],
+            dataLabels: { enabled: false },
+            stroke: { width: 4, curve: 'smooth' },
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shade: 'light',
+                    type: 'vertical',
+                    gradientToColors: ['#16a085'],
+                    opacityFrom: 0.8,
+                    opacityTo: 0.1,
+                }
+            },
+            xaxis: {
+                categories: labels,
+                axisBorder: { show: false },
+                labels: { 
+                    style: { 
+                        colors: '#7f8c8d', 
+                        fontSize: '12px', 
+                        fontWeight: 600 
+                    } 
+                },
+                title: {
+                    text: 'Comptes',
+                    style: { color: '#34495e', fontWeight: 'bold' }
+                }
+            },
+            yaxis: {
+                labels: {
+                    formatter: (value) => `${value.toFixed(2)} €`,
+                    style: { 
+                        colors: '#7f8c8d', 
+                        fontSize: '12px', 
+                        fontWeight: 600 
+                    }
+                },
+                title: {
+                    text: 'Solde (€)',
+                    style: { color: '#34495e', fontWeight: 'bold' }
+                }
+            },
+            grid: {
+                borderColor: '#ecf0f1',
+                strokeDashArray: 4,
+            },
+            tooltip: {
+                theme: 'dark',
+                enabled: true,
+                x: { show: true },
+                y: {
+                    formatter: value => `${value.toFixed(2)} €`
+                },
+                style: { fontFamily: 'Poppins' }
+            },
+            markers: {
+                size: 5,
+                colors: ['#1abc9c'],
+                strokeWidth: 2,
+                hover: {
+                    size: 7,
+                }
+            },
+            legend: {
+                position: 'top',
+                horizontalAlign: 'right',
+                fontWeight: 600,
+            }
+        };
+
+        // Créer et rendre le graphique
+        const chart = new ApexCharts(document.querySelector('.chart-area'), chartOptions);
+        chart.render();
+    });
+</script>
+
+{% endblock %}
+
+

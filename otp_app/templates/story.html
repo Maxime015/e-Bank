@@ -1,0 +1,79 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <title>Transaction History</title>
+    <link rel="stylesheet" href="{% static 'css/story.css' %}">
+</head>
+<body>
+    <main class="table" id="customers_table">
+        {% include 'base.html' %}
+        <section class="table__header">
+            <div class="export__file">
+                <label for="export-file" class="export__file-btn" title="Export File"></label>
+                <input type="checkbox" id="export-file">
+                <div class="export__file-options">
+                    <span>Export As &nbsp; &#10140;</span>
+                    <label for="export-file" id="toPDF">
+                        PDF <img src="{% static 'images/pdf.png' %}" alt="PDF">
+                    </label>
+                    <label for="export-file" id="toJSON">
+                        JSON <img src="{% static 'images/json.png' %}" alt="JSON">
+                    </label>
+                    <label for="export-file" id="toCSV">
+                        CSV <img src="{% static 'images/csv.png' %}" alt="CSV">
+                    </label>
+                    <label for="export-file" id="toEXCEL">
+                        EXCEL <img src="{% static 'images/excel.png' %}" alt="EXCEL">
+                    </label>
+                </div>
+            </div>
+            <form action="{% url 'export_historique' %}" method="get">
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-download"></i> Exporter l'historique des Transactions
+                </button>
+            </form>
+            
+            <h1>Account List</h1>
+            <div class="input-group">
+                <input type="search" placeholder="Search Data...">
+                <img src="{% static 'images/search.png' %}" alt="Search Icon">
+            </div>
+        </section>
+        
+        <section class="table__body">
+            <table>
+                <thead>
+                    <tr> 
+                        <th>N° Compte<span class="icon-arrow">&UpArrow;</span></th>
+                        <th>Montant<span class="icon-arrow">&UpArrow;</span></th>
+                        <th>Type de Transactions<span class="icon-arrow">&UpArrow;</span></th>
+                        <th>date<span class="icon-arrow">&UpArrow;</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for transaction in transactions %}
+                    <tr>
+                        <td>{{ transaction.compte_id }}</td>
+                        <td>{{ transaction.montant }}</td>
+                        <td>{{ transaction.type_transaction }}</td>
+                        <td>{{ transaction.date }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+        </section>
+      
+    </main>
+    <script src="{% static 'js/Tab.js' %}"></script>
+</body>
+</html>
+
+
+
+            

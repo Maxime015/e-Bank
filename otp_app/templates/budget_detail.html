@@ -1,0 +1,533 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Dépenses</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            overflow-y: hidden;
+        }
+
+        header {
+            background-color: #007BFF;
+            padding: 0.5rem;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin: 2rem;
+            border: 1px solid #333;
+        }
+
+        .form-container{
+            flex: 1;
+            background: #fff;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            margin: 1rem;
+            max-width: 400px;
+            border: 1px solid #333;
+            height: 600px;
+        }
+
+        .form-container h3, .table-container h3 {
+            text-align: center;
+            margin-bottom: 1rem;
+            color: #444;
+        }
+
+        .form-container label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .form-container input {
+            width: 92%;
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            text-align:center; 
+        }
+
+        .form-container button {
+            width: 99%;
+            padding: 0.8rem;
+            background-color: #00b7ff;
+            color: #333;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin: auto;
+        }
+
+        .form-container button:hover {
+            background-color: #00b7ff;
+        }
+
+        .table-container {
+    flex: 1;
+    background: #fff;
+    padding: 1.5rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    margin: 1rem;
+    max-width: 1500px;
+    border-radius: 12px;
+    height: 700px;
+    overflow: auto;
+    overflow: overlay;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5), 0 6px 6px rgba(0, 0, 0, 0.3);
+    border: 6px solid darkslategrey;
+}
+
+
+.table-container table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+}
+
+.table-container table th,
+.table-container table td {
+    text-align: left;
+    padding: 1rem;
+    border-bottom: 1px solid #ddd;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.table-container table th {
+    background-color: #007acc;
+    color: #fff;
+    cursor: pointer;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    user-select: none;
+}
+
+.table-container table th:hover {
+    background-color: #005fa3;
+}
+
+.table-container table tr:nth-child(even) {
+    background-color: #e0d7d7;
+}
+
+.table-container table tr:hover {
+    background-color: #e8f4fc;
+    transform: scale(1.02);
+    transition: transform 0.2s ease;
+}
+
+.table-container::-webkit-scrollbar {
+    width: 0.6rem;
+    height: 0.6rem;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    border-radius: 0.5rem;
+    background-color:midnightblue;
+    visibility: hidden;
+}
+
+.table-container:hover::-webkit-scrollbar-thumb {
+    visibility: visible;
+}
+
+.table-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 0.5rem;
+}
+
+/* Ajout d'un effet de tri */
+.table-container table th.sorted-asc::after {
+    content: " ▲";
+    font-size: 0.8rem;
+}
+
+.table-container table th.sorted-desc::after {
+    content: " ▼";
+    font-size: 0.8rem;
+}
+
+       
+.delete-btn {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.delete-btn:hover {
+    background-color: #c0392b;
+}
+
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .form-container, .table-container {
+                max-width: 90%;
+            }
+        }
+
+
+        .card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid #333;
+            margin-bottom: 35px;
+        }
+
+        .card:hover {
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            border: 2.5px solid goldenrod;
+        }
+
+        .budget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .budget-center {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: -15px;
+        }
+
+        .budget-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .budget-amount {
+            font-size: 1.2rem;
+            color: #007bff;
+        }
+
+        .progress {
+            height: 10px;
+            background: #ddd;
+            border-radius: 5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: #007bff;
+            border-radius: 5px;
+        }
+
+        .tab-menu {
+            display: flex;
+            justify-content: center;
+            background: #e6f0ff;
+            padding: 5px;
+            margin-bottom: -10px;
+            border-radius: 10px;
+        }
+
+        .tab-menu button {
+            background: transparent;
+            border: none;
+            font-size: 1rem;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: color 0.3s, font-weight 0.3s;
+        }
+
+        .tab-menu button:hover {
+            color: #007bff;
+        }
+
+        .tab-menu button.active {
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        @media (max-width: 768px) {
+            .tab-menu {
+                flex-wrap: wrap;
+            }
+        }
+
+.messages {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.alert {
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    font-size: 16px;
+    height: 40px;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border-color: #c3e6cb;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    color: #856404;
+    border-color: #ffeeba;
+}
+
+.alert-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border-color: #bee5eb;
+}
+
+
+.statut{
+    padding: .4rem 0;
+    border-radius: 2rem;
+    text-align: center;
+    font-weight: bold;
+    display: inline-block;
+    min-width: 120px;
+    background: linear-gradient(45deg, #f58167, #ff8c00); /* Dégradé du rouge (ff5733) à l'orange (ff8c00) */
+    color: #000000; /* Brun clair */
+    font-weight:bolder;
+}
+
+.logo-image img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover; /* Pour s'assurer que l'image s'adapte bien au cercle */
+        display: block; /* Pour éviter tout comportement indésirable dans certains navigateurs */
+    }
+
+    </style>
+</head>
+<body>
+    <header>
+        e.Track - Gestion des Dépenses
+    </header>
+
+     <!-- Menu des onglets -->
+     <div class="tab-menu">
+        <button class="tab-button" onclick="window.location.href='{% url 'transactions' %}'">Transactions</button>
+        <button class="tab-button" onclick="window.location.href='{% url 'dashboard' %}'">Expenses</button>
+        <button class="tab-button" onclick="window.location.href='{% url 'graphe' %}'">Graphe 1</button>
+        <button class="tab-button" onclick="window.location.href='{% url 'graphe2' %}'">Graphe 2</button>
+        <button class="tab-button" onclick="window.location.href='{% url 'graphe3' %}'">Graphe 3</button>
+        <button class="tab-button" onclick="window.location.href='{% url 'graphe4' %}'">Graphe 4</button>
+        <button class="tab-button" onclick="window.location.href='{% url 'graphe5' %}'">Graphe 5</button>
+        <button class="tab-button" onclick="window.location.href='{% url 'graphe6' %}'">Graphe 6</button>
+        <button class="tab-button" onclick="window.location.href='{% url 'Tab' %}'">Accounts</button>
+        <button class="tab-button" onclick="window.location.href='{% url 'bank' %}'">+ Account</button>
+    </div>
+    
+
+    <div class="container">
+        <!-- Formulaire -->
+        <div class="form-container">
+
+                    <!-- Affichage des détails pour un seul compte -->
+                    <div class="card">
+                        <div class="budget-header">
+                            <span class="budget-title">{{ account.nom }}</span>
+                            <span class="budget-amount">{{ account.solde }} €</span>
+                        </div>
+                        <p>{{ nbre_expenses }} dépense(s)</p>
+                        <div class="budget-center">
+                            <p> {{ total_expenses }} € dépensés</p>
+                            <p> {{ reste }} € restants</p>
+                        </div>
+                        <div class="progress">
+                            <div id="progress-bar" class="progress-bar" style="width: {{ progress_percentage }}%;"></div>
+                        </div>
+                        <p>{{ progress_percentage }}% du solde utilisé</p>
+                        
+                    </div>
+
+                    <h3>Ajouter une Dépense</h3>
+                    {% if messages %}
+                    <div class="messages">
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                <strong>{{ message.tags|capfirst }}:</strong> {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                
+
+                <form method="POST" id="expense-form">
+                    {% csrf_token %}
+                    <label for="description">Description :</label>
+                    <input type="text" id="description" name="description" placeholder="Description" required aria-label="Description de la dépense">
+                    
+                    <label for="amount">Montant (€) :</label>
+                    <input type="number" id="amount" name="amount" placeholder="Montant" required min="0.01" step="0.01" aria-label="Montant de la dépense">
+                    
+                    <button type="submit" id="submit-button">Ajouter votre dépense</button>
+                </form>
+             
+        </div>
+
+        <!-- Tableau -->
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Logo</th>
+                        <th onclick="sortTable(0)">Montant</th>
+                        <th onclick="sortTable(1)">Description</th>
+                        <th onclick="sortTable(2)">Date</th>
+                        <th onclick="sortTable(3)">Heure</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for expense in expenses %}
+                    <tr>
+
+                        <td>
+                            <div class="logo-image">
+                                {% if account.type_compte == "Basic" %}
+                                    <img src="{% static 'images/basic.png' %}" alt="Compte Basic" />
+                                {% elif account.type_compte == "Premium" %}
+                                    <img src="{% static 'images/premium.jpeg' %}" alt="Compte Premium" />
+                                {% elif account.type_compte == "Luxe" %}
+                                    <img src="{% static 'images/gold.jpeg' %}" alt="Compte Luxe" />
+                                {% else %}
+                                    <img src="{% static 'images/default.png' %}" alt="Compte Inconnu" />
+                                {% endif %}
+                            </div>
+                        </td>
+
+                        <td><div class="statut">{{ expense.amount }} €</div></td>
+                        <td>{{ expense.description }}</td>
+                        <td>{{ expense.date }}</td>
+                        <td>{{ expense.heure }}</td>
+                        <td> 
+                            <button class="delete-btn" data-url="{% url 'supprimer_expense' expense.id %}" 
+                                    onclick="handleDelete(this)">
+                                Supprimer
+                            </button>
+
+                        </td>
+                    </tr>        
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+    </div>
+
+
+<script>
+    const tabButtons = document.querySelectorAll('.tab-menu button');
+
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // Retirer la classe active de tous les boutons
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+
+            // Ajouter la classe active au bouton cliqué
+            button.classList.add('active');
+
+            // Logique pour afficher le contenu associé ici
+            console.log(`${button.textContent} activé`);
+        });
+    });
+
+
+    function sortTable(columnIndex) {
+    const table = document.querySelector(".table-container table tbody");
+    const rows = Array.from(table.rows);
+
+    const sortedRows = rows.sort((a, b) => {
+        const aText = a.cells[columnIndex].innerText.trim();
+        const bText = b.cells[columnIndex].innerText.trim();
+        return isNaN(aText) || isNaN(bText)
+            ? aText.localeCompare(bText)
+            : parseFloat(aText) - parseFloat(bText);
+    });
+
+    table.innerHTML = "";
+    sortedRows.forEach(row => table.appendChild(row));
+}
+
+function handleDelete(button) {
+    const url = button.getAttribute('data-url');
+    if (confirm("Êtes-vous sûr de vouloir supprimer cette dépense ?")) {
+        window.location.href = url;  // Redirection vers l'URL de suppression
+    }
+}
+
+</script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#expense-form").on("submit", function (e) {
+
+            // Récupère les données du formulaire
+            const formData = $(this).serialize();
+
+            // Envoie les données via AJAX
+            $.ajax({
+                url: "{% url 'budget_detail' account.id %}", // Remplacez par l'URL appropriée
+                type: "POST",
+                data: formData,
+                success: function (response) {
+                    // Met à jour la barre de progression
+                    const newProgress = response.progress_percentage;
+                    $("#progress-bar").css("width", newProgress + "%");
+
+                    // Optionnel : mettre à jour d'autres parties de la page (ex : liste des dépenses)
+                     // Rafraîchissement de la page après succès
+                     location.reload();
+                },
+                error: function (xhr) {
+                    alert("Une erreur s'est produite : " + xhr.responseText);
+                },
+            });
+        });
+    });
+</script>
+
+</body> 
+</html>

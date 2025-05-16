@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+  body {
+    background-image:url(/static/images/login-bg.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: 0 0;
+    margin: 0;
+    font-family: Arial, sans-serif; /* Assurez-vous que la police est uniforme */
+    overflow: hidden;
+}
+
+  form {
+    width: 500px;
+    padding: 20px;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    margin: 50px auto;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.2);  
+    border: 3px solid rgba(255, 255, 255, 0.2);
+  }
+
+  form p {
+    text-align: center;
+  }
+
+  form h3 {
+    text-align: center;
+  }
+
+  form small {
+    color: red;
+    font-size: 12px; /* Utiliser font-size au lieu de size */
+  }
+
+  input {
+    display: block;
+    width: 100%; /* Ajout pour un champ d'entrée plein largeur */
+    padding: 10px;
+    margin-top: 5px;
+    box-sizing: border-box;
+    text-align: center;
+  }
+</style>
+
+<form action="" method="POST">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button class="btn btn-primary" style="width:100%">Verify SMS Code</button>
+</form>
+
+
+{% endblock content %}

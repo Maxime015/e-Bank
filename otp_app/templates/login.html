@@ -1,0 +1,94 @@
+{% load static %}
+{% load socialaccount %}
+{% block content %}
+
+<!DOCTYPE html>
+   <html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="shortcut icon" href="{% static 'python.png' %}" type="image/x-icon">
+
+      <!--=============== REMIXICONS ===============-->
+      <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+
+      <!--=============== CSS ===============-->
+     
+      <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+
+      <title>Login Page</title>
+   </head>
+   <body>
+     
+      <div class="login">
+         
+        <img src="{% static 'images/city.jpg' %}" alt="login image" class="login__img">
+
+       
+
+        <form action="" method='POST' class="login__form">
+            {% csrf_token %}
+            <h1 class="login__title">Login</h1>
+
+            {% comment %} <a href="{% provider_login_url 'google' %}"> {% endcomment %}
+               <button style="margin-left: 55px; margin-top: -15px; border-radius: 10px; background-color: #4285F4; color: white; border: none; padding: 10px 20px; font-size: 16px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                   <img src="https://playtht-website-assets.s3.amazonaws.com/img/brand/google.svg" alt="Google logo" style="width: 20px; height: 20px;"/>
+                   Sign up with Google
+               </button>
+           </a>
+           <a 
+           {% comment %} href="{% provider_login_url 'github' %}" {% endcomment %}
+           >
+               <button style="margin-left: 55px; margin-top: 15px; margin-bottom: 15px; border-radius: 10px; background-color: #333; color: white; border: none; padding: 10px 20px; font-size: 16px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                   <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg" alt="GitHub logo" style="width: 20px; height: 20px;"/>
+                   Sign up with GitHub
+               </button>
+           </a>
+           
+           
+           
+
+            <div class="login__content">
+               <div class="login__box">
+                  <i class="ri-user-3-line login__icon"></i>
+
+                  <div class="login__box-input">
+                     <input type="email" name="username" required class="login__input" id="login-email" placeholder=" ">
+                     <label for="login-email" class="login__label">Email</label>
+                  </div>
+               </div>
+
+               <div class="login__box">
+                  <i class="ri-lock-2-line login__icon"></i>
+
+                  <div class="login__box-input">
+                     <input type="password" name="password" required class="login__input" id="login-pass" placeholder=" ">
+                     <label for="login-pass" class="login__label">Password</label>
+                     <i class="ri-eye-off-line login__eye" id="login-eye"></i>
+                  </div>
+               </div>
+            </div>
+
+            <div class="login__check">
+               <div class="login__check-group">
+                  <input type="checkbox" class="login__check-input" id="login-check">
+                  <label for="login-check" class="login__check-label">Remember me</label>
+               </div>
+
+               <a href="{% url 'forgot-password' %}" class="login__forgot">Forgot Password?</a>
+            </div>
+
+            <button type="submit" class="login__button">Login</button>
+
+            <p class="login__register">
+               Don't have an account? <a href="{% url 'signup' %}">Register</a>
+            </p>
+           
+         </form>
+      </div>
+      
+      <!--=============== MAIN JS ===============-->
+      <script src="{% static 'js/main.js' %}"></script>
+   </body>
+</html>
+{% endblock content %}

@@ -1,0 +1,179 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <title>Account List</title>
+    <link rel="stylesheet" href="{% static 'css/Tabx.css' %}">
+</head>
+<body>
+    <style>
+        
+    .logo-image img {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        object-fit: cover; /* Pour s'assurer que l'image s'adapte bien au cercle */
+        display: block; /* Pour éviter tout comportement indésirable dans certains navigateurs */
+    }
+    </style>
+    <main class="table" id="customers_table">
+        {% include 'base.html' %}
+        <section class="table__header">
+            <div class="export__file">
+                <label for="export-file" class="export__file-btn" title="Export File"></label>
+                <input type="checkbox" id="export-file">
+                <div class="export__file-options">
+                    <span>Export As &nbsp; &#10140;</span>
+                    <label for="export-file" id="toPDF">
+                        PDF <img src="{% static 'images/pdf.png' %}" alt="PDF">
+                    </label>
+                    <label for="export-file" id="toJSON">
+                        JSON <img src="{% static 'images/json.png' %}" alt="JSON">
+                    </label>
+                    <label for="export-file" id="toCSV">
+                        CSV <img src="{% static 'images/csv.png' %}" alt="CSV">
+                    </label>
+                    <label for="export-file" id="toEXCEL">
+                        EXCEL <img src="{% static 'images/excel.png' %}" alt="EXCEL">
+                    </label>
+                </div>
+            </div>
+            <form action="{% url 'export_historique' %}" method="get">
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-download"></i> Exporter l'historique des Transactions
+                </button>
+            </form>
+            
+            <h1>Account List</h1>
+            <div class="input-group">
+                <input type="search" placeholder="Search Data...">
+                <img src="{% static 'images/search.png' %}" alt="Search Icon">
+            </div>
+        </section>
+        
+        <section class="table__body">
+            <table>
+                <thead>
+                    <tr> 
+                        <th>Id <span class="icon-arrow">&UpArrow;</span></th>
+                        <th>Logo<span class="icon-arrow">&UpArrow;</span></th>
+                        <th>Noms <span class="icon-arrow">&UpArrow;</span></th>
+                        <th>Prénoms <span class="icon-arrow">&UpArrow;</span></th>
+                        <th>Pays <span class="icon-arrow">&UpArrow;</span></th>
+                        <th>Profession <span class="icon-arrow">&UpArrow;</span></th>
+                        <th>Heures <span class="icon-arrow">&UpArrow;</span></th>
+                        <th>Dates <span class="icon-arrow">&UpArrow;</span></th>
+                        <th>Statut <span class="icon-arrow">&UpArrow;</span></th>
+                        <th>Types <span class="icon-arrow">&UpArrow;</span></th>
+                        <th>Soldes <span class="icon-arrow">&UpArrow;</span></th>
+                        <th>Créditer <span class="icon-arrow">&UpArrow;</span></th>
+                        <th>Débiter<span class="icon-arrow">&UpArrow;</span></th>
+                        <th>Transf<span class="icon-arrow">&UpArrow;</span></th>
+                        <th>Delete <span class="icon-arrow">&UpArrow;</span></th>
+                        <th>Edit<span class="icon-arrow">&UpArrow;</span></th>
+                       
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for compte in comptes %}
+                    <tr>
+                        <td>{{ compte.id }}</td>
+                        <td>  <div class="logo-image">
+                            {% if compte.type_compte == "Basic" %}
+                                <img src="{% static 'images/basic.png' %}" alt="Compte Basic" />
+                            {% elif compte.type_compte == "Premium" %}
+                                <img src="{% static 'images/premium.jpeg' %}" alt="Compte Premium" />
+                            {% elif compte.type_compte == "Luxe" %}
+                                <img src="{% static 'images/gold.jpeg' %}" alt="Compte Luxe" />
+                            {% else %}
+                                <img src="{% static 'images/default.png' %}" alt="Compte Inconnu" />
+                            {% endif %}
+                        </div></td>
+                        <td>{{ compte.nom }}</td>
+                        <td>{{ compte.prenom }}</td>
+                        <td>{{ compte.pays }}</td>
+                        <td>{{ compte.profession }}</td>
+                        <td>{{ compte.heure }}</td>
+                        <td>{{ compte.date }}</td>
+                        <td>
+                            {% if compte.statut == "solvable" %}
+                                <span class="status solvable">{{ compte.statut }}</span>
+                            {% elif compte.statut == "Surendetté" %}
+                                <span class="status surendette">{{ compte.statut }}</span>
+                            {% elif compte.statut == "endetté" %}
+                                <span class="status endette">{{ compte.statut }}</span>
+                            {% elif compte.statut == "excédentaire" %}
+                                <span class="status excedentaire">{{ compte.statut }}</span>
+                            {% elif compte.statut == "sur le fil" %}
+                                <span class="status sur-le-fil">{{ compte.statut }}</span>
+                            {% elif compte.statut == "en alerte" %}
+                                <span class="status en-alerte">{{ compte.statut }}</span>
+                            {% elif compte.statut == "Nul" %}
+                                <span class="status nul">{{ compte.statut }}</span>
+                            {% elif compte.statut == "très faible solde" %}
+                                <span class="status tres-faible">{{ compte.statut }}</span>
+                            {% elif compte.statut == "recouvrement" %}
+                                <span class="status recouvrement">{{ compte.statut }}</span>
+                            {% else %}
+                                <span class="status default-status">{{ compte.statut }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ compte.type_compte }}</td>
+                        <td><strong>{{ compte.solde }}$</strong></td>
+                        <td>
+                            <button class="btn-credit" href="javascript:void(0);" data-id="{{ compte.id }}" title="Créditer le compte">
+                                Créditer
+                            </button>
+                        </td>
+
+                       
+                        <td>
+                            <button class="btn-debit" href="#" onclick="confirmerDebiter({{ compte.id }}, {{ compte.solde }})" title="Débiter le compte">
+                                Débiter
+                            </button>
+                        </td>
+                        
+                        <td>
+                            <button class="transfert-btn" data-url="{% url 'Transfert' compte_id=compte.id %}">
+                                Transférer
+                            </button>
+                        </td>
+                        
+
+                        <td> 
+                            <a class="delete_btn" href="{% url 'supprimer_compte' compte.id %}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce compte ?');">
+                                <img src="{% static 'images/remove.png' %}" alt="Delete" />
+                            </a>                            
+                        </td>
+
+                        <td>
+                            <a class="edit_btn" href="{% url 'update' compte.id %}">
+                                <img src="{% static 'images/edit.png' %}" alt="Update" />
+                            </a>
+                        </td>
+                        
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+        </section>
+      
+    </main>
+    <script src="{% static 'js/Tab.js' %}"></script>
+    <script src="{% static 'js/plus.js' %}"></script>
+    <script src="{% static 'js/moins.js' %}"></script>
+    <script src="{% static 'js/transf.js' %}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>'csrfmiddlewaretoken': '{{ csrf_token }}'</script>
+    
+</body>
+</html>
+
+
+
+            

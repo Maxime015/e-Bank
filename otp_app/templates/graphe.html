@@ -1,0 +1,328 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>e.Track Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.2/css/boxicons.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f7f7;
+            color: #333;
+        }
+
+        .container {
+            margin-top: -10px;
+            width: 100%;
+            max-width: 1600px;
+            margin: 20px auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 8px;
+            padding: -5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .card:hover{
+            border: solid 3px cadetblue;
+        }
+
+        .card i {
+            font-size: 3rem;
+            color: #0056b3;
+            margin-bottom: 5px;
+        }
+
+        .card h3 {
+            margin: 0;
+            font-size: 1.25rem;
+            color: #333;
+        }
+
+        .card p {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .stats {
+            grid-column: span 3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        canvas {
+            display: block;
+            margin: 20px auto;
+            max-width: 100%;
+        }
+
+        .buttons {
+            text-align: center;
+            top: 5px;
+            position: relative;
+        }
+
+        .buttons button {
+            margin: 0 10px;
+            padding: 10px 15px;
+            background-color: #0056b3;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        .buttons button:hover {
+            background-color: #003d80;
+        }
+
+        .logo-image img {
+        width: 50px;
+        height: 50px;
+        object-fit: cover; /* Pour s'assurer que l'image s'adapte bien au cercle */
+        display: block; /* Pour éviter tout comportement indésirable dans certains navigateurs */
+    }
+
+    
+    .navbar {
+            width: 70%;
+            background-color: #2c3e50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            border-radius: 25px;
+            position: relative;
+            margin: auto;
+            height: 5px;
+            top: 10px;
+        }
+
+        .navbar .logo {
+            font-size: 24px;
+            color: #ecf0f1;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-decoration: none;
+        }
+
+        .navbar .menu {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar .menu li {
+            margin: 0 15px;
+        }
+
+        .navbar .menu a {
+            color: #ecf0f1;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .navbar .menu a:hover {
+            color: #1abc9c;
+            transition: color 0.3s ease;
+        }
+    </style>
+</head>
+
+
+
+
+
+<body>
+
+    <nav class="navbar">
+        <a href="#" class="logo">Dashboard</a>
+        <ul class="menu">
+            <li><a href="{% url 'bank' %}">++ Account</a></li>
+            <li><a href="{% url 'graphe' %}">Graphe~ 1</a></li>
+            <li><a href="{% url 'graphe2' %}">Graphe~2</a></li>
+            <li><a href="{% url 'graphe3' %}">Graphe~3</a></li>
+            <li><a href="{% url 'graphe4' %}">Graphe~4</a></li>
+            <li><a href="{% url 'graphe5' %}">Graphe~5</a></li>
+            <li><a href="{% url 'Tab' %}">Accounts</a></li>
+            <li><a href="{% url 'profile' %}">Profile</a></li>
+            <li><a href="{% url 'dashboard' %}">Expenses</a></li>
+            <li><a href="{% url 'transactions' %}">Transactions</a></li>
+        </ul>
+    </nav>
+  
+    <div class="container">
+        <!-- Card 1: Transactions -->
+        <div class="card">
+            <div class="logo-image">
+                <img src="{% static 'images/wallet.png' %}" />
+            </div>
+            <h3>Nombre total de Compte(s)</h3>
+            <p>{{ nbre_accounts }}</p>
+        </div>
+
+        <!-- Card 2: Nombre de transactions -->
+        <div class="card">
+            <div class="logo-image">
+                <img src="{% static 'images/expensive.png' %}"/>
+            </div>
+            <h3>Nombre de Comptes solvable(s)</h3>
+            <p>{{ nbre_solvable_accounts }}</p>
+        </div>
+
+        <!-- Card 3: Budgets atteints -->
+        <div class="card">
+            <div class="logo-image">
+                <img src="{% static 'images/loss.png' %}"/>
+            </div>
+            <h3>Nombre de Comptes endetté(s)</h3>
+            <p>{{ nbre_decrease_accounts }}</p>
+        </div>
+
+
+
+       <!-- Card 2: Nombre de transactions -->
+       <div class="card">
+        <div class="logo-image">
+            <img src="{% static 'images/expense.png' %}"/>
+        </div>
+            <h3>Nbre Comptes (Solde == TDépenses)</h3>
+            <p>{{ comptes_egaux }}/{{ nbre_accounts }}</p>
+        </div>
+
+
+    </div>
+
+        <!-- Card 4: Statistiques -->
+        <div class="cardo stats">
+            <h3>Statistiques (en €)</h3>
+            <canvas id="statsChart" width="1550" height="540"></canvas>
+        </div>
+
+    
+
+    <div class="buttons">
+        <button id="changeChartType">Changer le type de graphique</button>
+        <button id="downloadChart">Télécharger le graphique</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Les données sont insérées depuis Django avec le filtre |safe
+        const labels = JSON.parse('{{ labels|safe }}');
+        const data = JSON.parse('{{ data|safe }}');
+
+        const ctx = document.getElementById('statsChart').getContext('2d');
+        let chartType = 'bar';
+
+        // Configuration du graphique
+        const chartData = {
+            labels: labels,
+            datasets: [{
+                label: 'Soldes des Comptes',
+                data: data,
+                backgroundColor: [
+                'rgba(255, 69, 0, 0.7)',    // Chaud : Red Orange
+                'rgba(70, 130, 180, 0.7)',  // Froid : Steel Blue
+                'rgba(255, 165, 0, 0.7)',   // Chaud : Orange
+                'rgba(0, 191, 255, 0.7)',   // Froid : Deep Sky Blue
+                'rgba(255, 99, 71, 0.7)',   // Chaud : Tomato
+                'rgba(32, 178, 170, 0.7)',  // Froid : Light Sea Green
+                'rgba(255, 215, 0, 0.7)',   // Chaud : Gold
+                'rgba(123, 104, 238, 0.7)', // Froid : Medium Slate Blue
+                'rgba(240, 128, 128, 0.7)', // Chaud : Light Coral
+                'rgba(72, 209, 204, 0.7)',  // Froid : Medium Turquoise
+
+                   'rgba(255, 69, 0, 0.7)',    // Red Orange
+                    'rgba(255, 165, 0, 0.7)',   // Orange
+                    'rgba(255, 99, 71, 0.7)',   // Tomato
+                    'rgba(255, 215, 0, 0.7)',   // Gold
+                    'rgba(240, 128, 128, 0.7)', // Light Coral
+                    'rgba(255, 160, 122, 0.7)', // Light Salmon
+                    'rgba(255, 182, 193, 0.7)', // Light Pink
+                    'rgba(255, 105, 180, 0.7)', // Hot Pink
+                    'rgba(250, 128, 114, 0.7)', // Salmon
+                    'rgba(255, 69, 0, 0.7)',    // Red Orange
+                    'rgba(255, 140, 0, 0.7)',   // Dark Orange
+
+                    'rgba(70, 130, 180, 0.7)',  // Steel Blue
+                    'rgba(0, 191, 255, 0.7)',   // Deep Sky Blue
+                    'rgba(135, 206, 250, 0.7)', // Light Sky Blue
+                    'rgba(0, 206, 209, 0.7)',   // Dark Turquoise
+                    'rgba(32, 178, 170, 0.7)',  // Light Sea Green
+                    'rgba(47, 79, 79, 0.7)',    // Dark Slate Gray
+                    'rgba(0, 128, 128, 0.7)',   // Teal
+                    'rgba(72, 209, 204, 0.7)',  // Medium Turquoise
+                    'rgba(123, 104, 238, 0.7)', // Medium Slate Blue
+                    'rgba(147, 112, 219, 0.7)', // Medium Purple
+                    'rgba(65, 105, 225, 0.7)',  // Royal Blue
+
+
+                ],
+                borderColor: '#0056b3',
+                borderWidth: 1
+            }]
+        };
+
+        const options = {
+            responsive: false,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true
+                }
+            }
+        };
+
+        // Initialiser le graphique
+        let statsChart = new Chart(ctx, {
+            type: chartType,
+            data: chartData,
+            options: options
+        });
+
+        // Gestion du bouton pour changer le type de graphique
+        document.getElementById('changeChartType').addEventListener('click', () => {
+            const chartTypes = ['bar', 'line', 'doughnut', 'pie', 'radar', 'polarArea', 'bubble', 'scatter'];
+            const currentIndex = chartTypes.indexOf(chartType);
+            chartType = chartTypes[(currentIndex + 1) % chartTypes.length];
+
+            statsChart.destroy();
+            statsChart = new Chart(ctx, {
+                type: chartType,
+                data: chartData,
+                options: options
+            });
+        });
+
+        // Gestion du bouton pour télécharger le graphique
+        document.getElementById('downloadChart').addEventListener('click', () => {
+            const link = document.createElement('a');
+            link.href = statsChart.toBase64Image();
+            link.download = 'graphique.png';
+            link.click();
+        });
+    </script>
+</body>
+</html>

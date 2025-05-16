@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graph Visualization</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        body {
+            background: linear-gradient(45deg, #90c8f1, #6f6cf5);
+            font-family: 'Helvetica, Arial, sans-serif';
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+        }
+        .card {
+            width: 100%;
+            max-width: 1700px;
+            padding: 15px;
+            position: relative;
+        }
+        .card::before,
+        .card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+        }
+        .card::before {
+            z-index: 1;
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translate(-30px, -30px);
+        }
+        .card::after {
+            z-index: 2;
+            background-color: #ffffff;
+        }
+        .card-content {
+            position: relative;
+            z-index: 3;
+        }
+
+        .navbar {
+            background-color: #2c3e50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            top: -120px;
+            border-radius: 25px;
+            position: relative;
+        }
+
+        .navbar .logo {
+            font-size: 24px;
+            color: #ecf0f1;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-decoration: none;
+        }
+
+        .navbar .menu {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar .menu li {
+            margin: 0 15px;
+        }
+
+        .navbar .menu a {
+            color: #ecf0f1;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .navbar .menu a:hover {
+            color: #1abc9c;
+            transition: color 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <nav class="navbar">
+            <a href="#" class="logo">Dashboard</a>
+            <ul class="menu">
+                <li><a href="{% url 'bank' %}">++ Account</a></li>
+                <li><a href="{% url 'graphe' %}">Graphe~ 1</a></li>
+                <li><a href="{% url 'graphe2' %}">Graphe~2</a></li>
+                <li><a href="{% url 'graphe3' %}">Graphe~3</a></li>
+                <li><a href="{% url 'graphe4' %}">Graphe~4</a></li>
+                <li><a href="{% url 'graphe6' %}">Graphe~6</a></li>
+                <li><a href="{% url 'Tab' %}">Accounts</a></li>
+                <li><a href="{% url 'profile' %}">Profile</a></li>
+                <li><a href="{% url 'dashboard' %}">Expenses</a></li>
+                <li><a href="{% url 'transactions' %}">Transactions</a></li>
+            </ul>
+        </nav>
+        <div class="card-content">
+            <div id="line-chart"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script>
+      // Récupération des données JSON injectées par Django
+      const budgetsData = JSON.parse('{{ budgets_data_json|escapejs }}');
+  
+      // Conversion des données en format compatible avec ApexCharts
+      const seriesData = budgetsData.map(data => ({
+          name: data.name,
+          data: [data.total_expenses, data.solde, data.reste],
+      }));
+  
+      // Couleurs personnalisées pour les séries
+      const customColors = [
+      'rgba(255, 69, 0, 0.7)',    // Chaud : Red Orange
+                'rgba(70, 130, 180, 0.7)',  // Froid : Steel Blue
+                'rgba(255, 165, 0, 0.7)',   // Chaud : Orange
+                'rgba(0, 191, 255, 0.7)',   // Froid : Deep Sky Blue
+                'rgba(255, 99, 71, 0.7)',   // Chaud : Tomato
+                'rgba(32, 178, 170, 0.7)',  // Froid : Light Sea Green
+                'rgba(255, 215, 0, 0.7)',   // Chaud : Gold
+                'rgba(123, 104, 238, 0.7)', // Froid : Medium Slate Blue
+                'rgba(240, 128, 128, 0.7)', // Chaud : Light Coral
+                'rgba(72, 209, 204, 0.7)',  // Froid : Medium Turquoise
+
+                   'rgba(255, 69, 0, 0.7)',    // Red Orange
+                    'rgba(255, 165, 0, 0.7)',   // Orange
+                    'rgba(255, 99, 71, 0.7)',   // Tomato
+                    'rgba(255, 215, 0, 0.7)',   // Gold
+                    'rgba(240, 128, 128, 0.7)', // Light Coral
+                    'rgba(255, 160, 122, 0.7)', // Light Salmon
+                    'rgba(255, 182, 193, 0.7)', // Light Pink
+                    'rgba(255, 105, 180, 0.7)', // Hot Pink
+                    'rgba(250, 128, 114, 0.7)', // Salmon
+                    'rgba(255, 69, 0, 0.7)',    // Red Orange
+                    'rgba(255, 140, 0, 0.7)',   // Dark Orange
+
+                    'rgba(70, 130, 180, 0.7)',  // Steel Blue
+                    'rgba(0, 191, 255, 0.7)',   // Deep Sky Blue
+                    'rgba(135, 206, 250, 0.7)', // Light Sky Blue
+                    'rgba(0, 206, 209, 0.7)',   // Dark Turquoise
+                    'rgba(32, 178, 170, 0.7)',  // Light Sea Green
+                    'rgba(47, 79, 79, 0.7)',    // Dark Slate Gray
+                    'rgba(0, 128, 128, 0.7)',   // Teal
+                    'rgba(72, 209, 204, 0.7)',  // Medium Turquoise
+                    'rgba(123, 104, 238, 0.7)', // Medium Slate Blue
+                    'rgba(147, 112, 219, 0.7)', // Medium Purple
+                    'rgba(65, 105, 225, 0.7)',  // Royal Blue
+
+      ];
+  
+      // Configuration du graphique
+      const chartOptions = {
+          chart: {
+              height: 600,
+              type: 'line',
+              fontFamily: 'Helvetica, Arial, sans-serif',
+              foreColor: '#6E729B',
+              toolbar: { show: false },
+          },
+          stroke: { curve: 'smooth', width: 2 },
+          series: seriesData,
+          colors: customColors, // Applique les couleurs personnalisées
+          title: {
+              text: 'Budget Overview',
+              align: 'left',
+              offsetY: 25,
+              offsetX: 5,
+              style: { fontSize: '14px', fontWeight: 'bold', color: '#373d3f' },
+          },
+          markers: { size: 6, strokeWidth: 0, hover: { size: 9 } },
+          grid: {
+              show: true,
+              padding: { bottom: 0 },
+              borderColor: '#D9DBF3',
+              xaxis: { lines: { show: true } },
+          },
+          labels: ['Total Expenses', 'Solde', 'Reste'],
+          xaxis: { tooltip: { enabled: false } },
+          legend: {
+              position: 'top',
+              horizontalAlign: 'right',
+              offsetY: -10,
+              labels: { colors: '#373d3f' },
+          },
+      };
+  
+      // Rendu du graphique
+      const lineChart = new ApexCharts(document.querySelector('#line-chart'), chartOptions);
+      lineChart.render();
+  </script>
+  
+</body>
+</html>

@@ -1,0 +1,251 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>e-Bank - Suivi des Budgets</title>
+    <style>
+        /* Styles généraux */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background-image: url(/static/images/background.png);
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            overflow-x: hidden;
+        }
+
+            /* Personnalisation de la scrollbar */
+            ::-webkit-scrollbar {
+                width: 12px; /* Largeur de la scrollbar */
+            }
+
+            ::-webkit-scrollbar-track {
+                background: #e0e5eb; /* Couleur de la piste de la scrollbar */
+                border-radius: 10px; /* Coins arrondis */
+            }
+
+            ::-webkit-scrollbar-thumb {
+                background: #7ba7d7; /* Couleur de la barre de défilement */
+                border-radius: 10px; /* Coins arrondis */
+                border: 3px solid #e0e5eb; /* Bord autour de la barre de défilement */
+            }
+
+            ::-webkit-scrollbar-thumb:hover {
+                background: #5591c8; /* Couleur au survol */
+            }
+
+    
+    
+    
+        .container {
+        width: 100%;
+        max-width: 1600px; /* Largeur maximale encore augmentée */
+        margin: 20px auto; /* Centrage automatique */
+        padding: 20px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr); /* 4 colonnes fixes */
+        gap: 40px; /* Espacement plus grand entre les cartes */
+        position: relative;
+        top: 50px;
+        background: rgba(255, 255, 255, 0.2);  
+        border-radius: 10px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5), 0 6px 6px rgba(0, 0, 0, 0.3);
+        border: 6px solid rgba(255, 255, 255, 0.2);
+    }
+
+    
+        .card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 30px; /* Plus d'espace interne */
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: solid 1px black;
+           z-index: 1;
+        }
+    
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            border: solid 3px goldenrod;
+        }
+    
+        .budget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    
+        .budget-center {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: -15px;
+        }
+    
+        .budget-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            position: relative;
+            left: -80px;
+        }
+    
+        .budget-amount {
+            font-size: 1.2rem;
+            color: #007bff;
+        }
+    
+        .progress {
+            height: 10px;
+            background: #ddd;
+            border-radius: 5px;
+            position: relative;
+            overflow: hidden;
+        }
+    
+        .progress-bar {
+            height: 100%;
+            background: #007bff;
+            border-radius: 5px;
+        }
+    
+        /* Réactivité pour petits écrans */
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: repeat(2, 1fr); /* 2 colonnes pour les petits écrans */
+            }
+        }
+    
+        @media (max-width: 480px) {
+            .container {
+                grid-template-columns: 1fr; /* 1 colonne pour les très petits écrans */
+            }
+        }
+
+        
+.tab-menu {
+    display: flex;
+    justify-content: center;
+    background: #e6f0ff;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    position: fixed;
+    top: 0; /* Aligne en haut de la page */
+    left: 0; /* Aligne à gauche de la page */
+    width: 100%; /* Le header occupe toute la largeur de la page */
+    z-index: 2;
+}
+
+.tab-menu button {
+    background: transparent;
+    border: none;
+    font-size: 1rem;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: color 0.3s, font-weight 0.3s;
+}
+
+.tab-menu button:hover {
+    color: #007bff;
+}
+
+.tab-menu button.active {
+    font-weight: bold;
+    color: #007bff;
+}
+
+@media (max-width: 768px) {
+    .tab-menu {
+        flex-wrap: wrap;
+    }
+}
+
+/* Supprimer le soulignement des liens */
+a {
+    text-decoration: none;
+}
+
+/* Optionnel: Ajouter un style au survol (hover) pour les liens */
+a:hover {
+    text-decoration: none;  /* Assurez-vous qu'il n'y a pas de soulignement au survol */
+}
+
+.logo-image img {
+        width: 50px;
+        height: 50px;
+        object-fit: cover; /* Pour s'assurer que l'image s'adapte bien au cercle */
+        display: block; /* Pour éviter tout comportement indésirable dans certains navigateurs */
+        border-radius: 50px;
+    }
+
+
+
+   
+
+    </style>
+    
+</head>
+<body>
+
+    <!-- Menu des onglets -->
+    <div class="tab-menu">
+        <button class="tab-button" onclick="window.location.href='{% url 'transactions' %}'">Transactions</button>
+        <button class="tab-button" onclick="window.location.href='{% url 'dashboard' %}'">Expenses</button>
+        <button class="tab-button" onclick="window.location.href='{% url 'graphe' %}'">Graphe 1</button>
+        <button class="tab-button" onclick="window.location.href='{% url 'graphe2' %}'">Graphe 2</button>
+        <button class="tab-button" onclick="window.location.href='{% url 'graphe3' %}'">Graphe 3</button>
+        <button class="tab-button" onclick="window.location.href='{% url 'graphe4' %}'">Graphe 4</button>
+        <button class="tab-button" onclick="window.location.href='{% url 'graphe5' %}'">Graphe 5</button>
+        <button class="tab-button" onclick="window.location.href='{% url 'graphe6' %}'">Graphe 6</button>
+        <button class="tab-button" onclick="window.location.href='{% url 'Tab' %}'">Accounts</button>
+        <button class="tab-button" onclick="window.location.href='{% url 'bank' %}'">+ Account</button>
+    </div>
+    
+    
+    
+
+    <!-- Conteneur principal -->
+    <!-- Conteneur principal -->
+<div class="container">
+    {% for budget in budgets %} 
+    <a href="{% url 'budget_detail' budget.account.id %}">
+        <div class="card">
+            <div class="budget-header">
+                <div class="logo-image">
+                    {% if budget.account.type_compte == "Basic" %}
+                        <img src="{% static 'images/basic.png' %}" alt="Compte Basic" />
+                    {% elif budget.account.type_compte == "Premium" %}
+                        <img src="{% static 'images/premium.jpeg' %}" alt="Compte Premium" />
+                    {% elif budget.account.type_compte == "Luxe" %}
+                        <img src="{% static 'images/gold.jpeg' %}" alt="Compte Luxe" />
+                    {% else %}
+                        <img src="{% static 'images/default.png' %}" alt="Compte Inconnu" />
+                    {% endif %}
+                </div>
+                <span class="budget-title">{{ budget.account.nom }}</span>
+                <span class="budget-amount">{{ budget.account.solde }} €</span>
+            </div>
+            <p>{{ budget.nbre_expenses }} dépense(s)</p>
+            <div class="budget-center">
+                <p>{{ budget.total_expenses }} € dépensés</p>
+                <p>{{ budget.reste }} € restants</p>
+            </div>
+            <div class="progress">
+                <div class="progress-bar" style="width: {{ budget.progress_percentage }}%;"></div>
+            </div>
+            <p>{{ budget.progress_percentage }}% du solde utilisé</p>
+        </div>
+    </a>
+{% endfor %}
+</div>
+
+</body>
+</html>
+

@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+
+
+{% block content %}
+
+
+<style>
+    body {
+        background-image:url(/static/images/image.gif);
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: 0 0;
+        margin: 0;
+        font-family: Arial, sans-serif; /* Assurez-vous que la police est uniforme */
+        overflow: hidden;
+    }
+    
+    form{
+        width: 500px;
+        height: auto;
+        padding: 20px 20px 20px 20px;
+        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+        margin: 50px auto;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.2);  
+        border: 3px solid rgba(255, 255, 255, 0.2);
+    }
+    form p{
+        text-align: center;
+    }
+
+    form h3{
+        text-align: center
+    }
+    input {
+        display: block;
+        width: 100%; /* Ajout pour un champ d'entrée plein largeur */
+        padding: 10px;
+        margin-top: 5px;
+        box-sizing: border-box;
+        text-align: center;
+      }
+</style>
+
+
+    <form action="" method='POST'>
+        {% csrf_token %}
+        <h3><strong>Verify Email</strong></h3>
+        <div class="mb-3">
+            <label class="form-label">OTP</label>
+            <input class="form-control" name="otp_code" placeholder="Enter OTP">
+          </div>
+
+          <button class="btn btn-primary" style="width:100%">Activate Account</button>
+          <p>Need a new OTP? <a href="{% url 'resend_otp' %}">Resend OTP</a></p>
+
+    </form>
+{% endblock content %}
+    

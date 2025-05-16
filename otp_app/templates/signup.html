@@ -1,0 +1,159 @@
+{% block content %}
+<style>
+    /* Style général */
+    body {
+        background-image: url(/static/images/img.png);
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        margin: 0;
+        font-family: 'Roboto', sans-serif;
+        color: #333;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    /* Formulaire */
+    form {
+        width: 600px; /* Agrandi le formulaire */
+        padding: 40px; /* Augmenté le rembourrage */
+        background-color: rgba(255, 255, 255, 0.9); /* Supprimé le flou */
+        border-radius: 12px;
+        box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+
+    form h4 {
+        text-align: center;
+        font-size: 28px;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    form h4::after {
+        content: '';
+        width: 60px;
+        height: 3px;
+        background-color: #e63946;
+        display: block;
+        margin: 10px auto;
+        border-radius: 10px;
+    }
+
+    .mb-3 {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 5px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px;
+        border-radius: 8px;
+        background-color: rgba(220, 220, 220, 0.7);
+        color: #333;
+        font-size: 16px;
+        border: none;
+        box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.2);
+        transition: box-shadow 0.2s, transform 0.2s;
+        text-align: center;
+        font-weight: bold; /* Couleur du texte d'espace réservé */
+    }
+
+    .form-control::placeholder {
+        color: black;
+        text-align: center;
+    }
+
+    .form-control:focus {
+        box-shadow: 0 0 6px #457b9d, inset 0px -1px 1px rgba(255,255,255,0.5);
+        transform: translateY(-2px);
+        outline: none;
+    }
+
+    /* Bouton */
+    button {
+        width: 100%;
+        padding: 12px;
+        background-color: #e63946; /* Couleur du bouton */
+        border-radius: 8px; 
+        border:none; 
+        color:white; 
+        font-weight:bold; 
+        font-size:16px; 
+       cursor:pointer; 
+       transition:.3s ease; 
+       box-shadow:.5px .5px .5px rgba(50,50,50,.5);
+   }
+
+   button:hover {
+       background-color:#d62839; 
+       transform:.95s ease; 
+   }
+
+   /* Texte du bas */
+   p {
+       text-align:center; 
+       margin-top:.5em; 
+       font-size:.9em; 
+       color:#555; 
+   }
+
+   p a {
+       color:#457b9d; 
+       text-decoration:none; 
+       font-weight:bold; 
+   }
+
+   p a:hover {
+       text-decoration:underline; 
+   }
+
+   /* Erreur */
+   small {
+       color:#e63946; 
+       position:absolute; 
+       bottom:-18px; 
+       left:-1; 
+       font-size:.8em; 
+   }
+
+   /* Media Queries */
+   @media (max-width:600px) {
+       form {
+           width:auto; /* Ajustement pour petits écrans */
+           padding-left:.05em; 
+           padding-right:.05em;  
+           margin:.05em auto;  
+       }
+
+       
+   }
+</style>
+
+<form action="" method="POST">
+    {% csrf_token %}
+    <h4>Create Your Account</h4>
+
+    {% for field in form %}
+      <div class="mb-3">
+          <label class="form-label">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}
+              <small>{{ field.errors }}</small>
+          {% endif %}
+      </div>
+    {% endfor %}
+    
+    <button type="submit">Sign Up</button>
+    
+    <p>Already have an account? <a href="{% url 'signin' %}">Login</a></p>
+</form>
+{% endblock content %}
